@@ -1,7 +1,25 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * The MIT License
+ *
+ * Copyright 2022 Heitor.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  */
 package br.com.os.telas;
 
@@ -9,20 +27,24 @@ import java.sql.*;
 import br.com.os.dal.ModuloConexao;
 import java.awt.Color;
 import javax.swing.JOptionPane;
+
 /**
+ * Tela para iniciar o sistema
  *
- * @author winhe
+ * @author Heitor
+ * @version 1.0
  */
 public class TelaLogin extends javax.swing.JFrame {
+
     //usando a variavel conexao DAL
     Connection conexao = null;
     // criando variáveis especiais para conexão com o banco
     // prepared Statement e ResultSet são frameworks do pacote java.sql e servem para preparar e executar as intruções sql
     PreparedStatement pst = null;
     ResultSet rs = null;
-    
+
     // criando o metodo logar
-    public void logar(){
+    public void logar() {
         // lógica principal para pesquisar no banco de dados
         String sql = "select * from tbusuarios where login =? and senha = ?";
         try {
@@ -47,7 +69,7 @@ public class TelaLogin extends javax.swing.JFrame {
                     TelaPrincipal.lblUsuario.setText(rs.getString(2));
                     TelaPrincipal.lblUsuario.setForeground(Color.red);
                     this.dispose();
-                } else {                    
+                } else {
                     TelaPrincipal principal = new TelaPrincipal();
                     principal.setVisible(true);
                     TelaPrincipal.lblUsuario.setText(rs.getString(2));
@@ -60,6 +82,7 @@ public class TelaLogin extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Falha na conexão com o Bando de dados");
         }
     }
+
     /**
      * Creates new form TelaLogin
      */
@@ -70,9 +93,9 @@ public class TelaLogin extends javax.swing.JFrame {
         // a linha abaixo serve de apoio ao status da conexao
         //System.out.println(conexao);
         // a estrutura a baixo muda o icone de acordo com o status da conexão
-        if(conexao != null){
+        if (conexao != null) {
             lblStatus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/os/icones/dbok2.png")));
-        }else{
+        } else {
             lblStatus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/os/icones/dberror2.png")));
         }
     }

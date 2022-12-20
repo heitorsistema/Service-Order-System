@@ -1,20 +1,54 @@
+/*
+ * The MIT License
+ *
+ * Copyright 2022 Heitor.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package br.com.os.telas;
 
+import br.com.os.dal.ModuloConexao;
 import java.text.DateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
+import java.sql.*;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
+ * Tela principal, onde pode ser utilizados dodas outras telas do sisstema
  *
- * @author winhe
+ * @author Heitor
+ * @version 1.0
  */
 public class TelaPrincipal extends javax.swing.JFrame {
+
+    Connection conexao = null;
 
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
+        // criando a variável conexão que faz a conexão atravez do ModuloConexao
+        conexao = ModuloConexao.conector();
     }
 
     /**
@@ -37,6 +71,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menCadOs = new javax.swing.JMenuItem();
         menCadUsu = new javax.swing.JMenuItem();
         menRel = new javax.swing.JMenu();
+        menRelCli = new javax.swing.JMenuItem();
         menRelSer = new javax.swing.JMenuItem();
         menOpc = new javax.swing.JMenu();
         menOpcSai = new javax.swing.JMenuItem();
@@ -56,7 +91,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         desktop.setLayout(desktopLayout);
         desktopLayout.setHorizontalGroup(
             desktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 572, Short.MAX_VALUE)
+            .addGap(0, 681, Short.MAX_VALUE)
         );
         desktopLayout.setVerticalGroup(
             desktopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -88,6 +123,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         menCadOs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK));
         menCadOs.setText("OS");
+        menCadOs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menCadOsActionPerformed(evt);
+            }
+        });
         menCad.add(menCadOs);
 
         menCadUsu.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK));
@@ -106,8 +146,22 @@ public class TelaPrincipal extends javax.swing.JFrame {
         menRel.setToolTipText("Consultar e gerar relatórios");
         menRel.setEnabled(false);
 
+        menRelCli.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.ALT_MASK));
+        menRelCli.setText("Clientes");
+        menRelCli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menRelCliActionPerformed(evt);
+            }
+        });
+        menRel.add(menRelCli);
+
         menRelSer.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK));
         menRelSer.setText("Serviços");
+        menRelSer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menRelSerActionPerformed(evt);
+            }
+        });
         menRel.add(menRelSer);
 
         Menu.add(menRel);
@@ -148,21 +202,17 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(desktop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblUsuario)
+                            .addComponent(lblData)
+                            .addComponent(jLabel1))
+                        .addContainerGap(64, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(115, 115, 115)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblData)
-                                    .addComponent(lblUsuario))))
-                        .addGap(0, 45, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addComponent(jLabel2)
+                        .addGap(30, 30, 30))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -171,20 +221,18 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addComponent(desktop)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(34, 34, 34)
                 .addComponent(lblUsuario)
-                .addGap(13, 13, 13)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(lblData)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
+                .addGap(33, 33, 33)
+                .addComponent(lblData)
+                .addGap(19, 19, 19)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(212, 212, 212))
         );
 
-        setSize(new java.awt.Dimension(768, 539));
+        setSize(new java.awt.Dimension(858, 590));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -194,8 +242,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         Date data = new Date();
         DateFormat formatador = DateFormat.getDateInstance(DateFormat.SHORT);
         // a linha a baixo substitue a data atual, pela data formatada
-        lblData.setText(formatador.format (data));
-        
+        lblData.setText(formatador.format(data));
     }//GEN-LAST:event_formWindowActivated
 
     private void menAjuSobActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menAjuSobActionPerformed
@@ -221,10 +268,49 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
     private void menCadCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadCliActionPerformed
         // Chamando a TelaCliente
-        TelaCliente  cliente = new TelaCliente();
+        TelaCliente cliente = new TelaCliente();
         cliente.setVisible(true);
         desktop.add(cliente);
     }//GEN-LAST:event_menCadCliActionPerformed
+
+    private void menCadOsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menCadOsActionPerformed
+        // chamando a tela de Ordem de Serviço
+        TelaOS os = new TelaOS();
+        os.setVisible(true);
+        desktop.add(os);
+    }//GEN-LAST:event_menCadOsActionPerformed
+
+    private void menRelCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelCliActionPerformed
+        //  Gerando um relatório de clientes
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a emissão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            // imprimindo relatório com o framework JasperReports
+            try {
+                // usando a classse JasperPrint para preparar a impressão de um relatório
+                JasperPrint print = JasperFillManager.fillReport("C:/reports/clientes.jasper", null, conexao);
+                // a linha abaixo exibe o relatório através da classe JasperViewer
+                JasperViewer.viewReport(print, false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
+    }//GEN-LAST:event_menRelCliActionPerformed
+
+    private void menRelSerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menRelSerActionPerformed
+        //  Gerando um relatório de serviços
+        int confirma = JOptionPane.showConfirmDialog(null, "Confirma a emissão deste relatório?", "Atenção!", JOptionPane.YES_NO_OPTION);
+        if (confirma == JOptionPane.YES_OPTION) {
+            // imprimindo o relatório com o framework JasperReports
+            try {
+                // usando a classse JasperPrint para preparar a impressão de um relatório
+                JasperPrint print = JasperFillManager.fillReport("C:/reports/servicos.jasper", null, conexao);
+                // a linha abaixo exibe o relatório através da classe JasperViewer
+                JasperViewer.viewReport(print, false);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+            }
+        }
+    }//GEN-LAST:event_menRelSerActionPerformed
 
     /**
      * @param args the command line arguments
@@ -277,6 +363,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenu menOpc;
     private javax.swing.JMenuItem menOpcSai;
     public static javax.swing.JMenu menRel;
+    private javax.swing.JMenuItem menRelCli;
     private javax.swing.JMenuItem menRelSer;
     // End of variables declaration//GEN-END:variables
 }
